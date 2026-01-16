@@ -10,9 +10,9 @@
 // just make the above a function, you seem to need it
 // to repeat and stuff
 
-void procedure() {      // this is the above stuff encapsulated
-  FILE *stream = stdin; // This is input
-  char *line = NULL;    // NULL so getline makes buffer itself
+void procedure() { // this is the above stuff encapsulated
+  FILE *stream = stdin;
+  char *line = NULL;
   size_t len = 0;
 
   char *token;
