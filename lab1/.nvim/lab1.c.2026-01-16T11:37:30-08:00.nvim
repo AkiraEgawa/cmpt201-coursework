@@ -1,0 +1,22 @@
+#include <stdio.h> // getline is in stdio, duh
+#include <string.h> // This is for strtok_r
+#include <stdlib.h> // Just in case, forgor what this has, but it's useful
+
+// IDEA
+// Get text
+// Tokenize with strtok_r
+// print each token with \n
+// just make the above a function, you seem to need it
+// to repeat and stuff
+
+void procedure(){ // this is the above stuff encapsulated
+  FILE* stream = stdin;
+  char* line = NULL;
+  size_t len = 0;
+  ssize_t nread;
+
+  printf("Please enter some text: ");
+  nread = getline(&line, &len, stream);
+  printf("Retrieved line of length %zd: \n", nread);
+  fwrite(line, nread, 1, stdout);
+}

@@ -27,10 +27,6 @@ void procedure() { // this is the above stuff encapsulated
     printf("%s\n", token);
     token = strtok_r(NULL, " ", &saveptr);
   }
-
-  // Please free your variables. Memory leaks suck
-  free(line);
-  return;
 }
 
 int main() { procedure(); }

@@ -14,23 +14,23 @@ void procedure() { // this is the above stuff encapsulated
   FILE *stream = stdin;
   char *line = NULL;
   size_t len = 0;
+  ssize_t nread;
 
   char *token;
   char *saveptr;
 
   printf("Please enter some text: ");
-  getline(&line, &len, stream);
+  nread = getline(&line, &len, stream);
+  printf("Retrieved line of length %zd: \n", nread);
+  fwrite(line, nread, 1, stdout);
+
   // NOTE: strtok_r needs to run for as many words as there are
 
   token = strtok_r(line, " ", &saveptr);
   while (token != NULL) {
-    printf("%s\n", token);
+    printf("Testing %s\n", token);
     token = strtok_r(NULL, " ", &saveptr);
   }
-
-  // Please free your variables. Memory leaks suck
-  free(line);
-  return;
 }
 
 int main() { procedure(); }
