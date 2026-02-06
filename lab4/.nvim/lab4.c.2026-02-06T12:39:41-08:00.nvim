@@ -68,15 +68,15 @@ int main() {
       snprintf(buffer, sizeof(buffer), "second block next: %p\n", block2->next);
   write(1, buffer, len);
 
-  int *ints1 = (int *)data1;
-  int count1 = dataSize / sizeof(int);
+  int *ints1 = (int*)data1;
+  int count1 = dataSize/sizeof(int);
 
   for (int i = 0; i < count1; i++) {
     len = snprintf(buffer, sizeof(buffer), "%d\n", ints1[i]);
     write(1, buffer, len);
   }
-  int *ints2 = (int *)data2;
-  int count2 = dataSize / sizeof(int);
+  int *ints2 = (int*)data2;
+  int count2 = dataSize/sizeof(int);
   for (int i = 0; i < count2; i++) {
     len = snprintf(buffer, sizeof(buffer), "%d\n", ints2[i]);
     write(1, buffer, len);
