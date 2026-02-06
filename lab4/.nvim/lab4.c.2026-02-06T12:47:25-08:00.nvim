@@ -68,13 +68,13 @@ int main() {
       snprintf(buffer, sizeof(buffer), "second block next: %p\n", block2->next);
   write(1, buffer, len);
 
-  unsigned char *bytes1 = (unsigned char *)data1;
+  unsigned char* bytes1 = (unsigned char*)data1;
 
   for (ssize_t i = 0; i < dataSize; i++) {
     len = snprintf(buffer, sizeof(buffer), "%u\n", bytes1[i]);
     write(1, buffer, len);
   }
-  unsigned char *bytes2 = (unsigned char *)data2;
+  unsigned char *bytes2 = (unsigned char*)data2;
   for (ssize_t i = 0; i < dataSize; i++) {
     len = snprintf(buffer, sizeof(buffer), "%u\n", bytes2[i]);
     write(1, buffer, len);
