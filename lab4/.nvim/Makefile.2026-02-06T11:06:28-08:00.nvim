@@ -1,0 +1,3 @@
+CC=clang
+CCFLAG= fsanitize=address
+echo $(CCFLAG)

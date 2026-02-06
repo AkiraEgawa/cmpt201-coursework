@@ -1,0 +1,32 @@
+#define _POSIX_C_SOURCE 200112L
+#define _GNU_SOURCE
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+int main() {
+  intptr_t increment = 256;
+  void *start = sbrk(0);
+  printf("start: %p\n", start);
+  sbrk(increment);
+  void *end = sbrk(0);
+  printf("end: %p\n", end);
+
+  // now, to assign some stuff
+  struct header block1 = {128, NULL};
+  struct header block2 = {128, NULL};
+  block1.next = &block2;
+
+  printf("block1: %p\n", &block1);
+  printf("block2: %p\n", &block2);
+
+
+  return 0;
+}

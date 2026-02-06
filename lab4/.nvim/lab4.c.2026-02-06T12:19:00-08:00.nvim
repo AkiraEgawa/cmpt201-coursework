@@ -1,0 +1,80 @@
+#define _POSIX_C_SOURCE 200112L
+#define _GNU_SOURCE
+#include <errno.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+void handle_error(const char *msg) {
+  perror(msg);
+  exit(EXIT_FAILURE);
+}
+
+void print_out(char *format, void *data, size_t data_size) {
+  int BUF_SIZE = 2046;
+  char buf[BUF_SIZE];
+  ssize_t len = snprintf(buf, BUF_SIZE, format,
+                         data_size == sizeof(uint64_t) ? *(uint64_t *)data
+                                                       : *(void **)data);
+  if (len < 0) {
+    handle_error("snprintf");
+  }
+  write(STDOUT_FILENO, buf, len);
+}
+
+int main() {
+  intptr_t increment = 256;
+  void *heap = sbrk(increment);
+
+  // Have to figure out size of header
+  ssize_t total = 256;
+  ssize_t headSize = sizeof(struct header);
+  ssize_t blockSize = total / 2;
+  ssize_t dataSize = blockSize - headSize;
+
+  // now, to assign some stuff
+  struct header *block1 = (struct header *)heap;
+  block1->size = blockSize;
+  block1->next = NULL;
+  void *data1 = (char *)heap + headSize;
+  memset(data1, 0, dataSize);
+
+  // now do the same to block2
+  struct header *block2 = (struct header *)((char *)heap + blockSize);
+  block2->size = blockSize;
+  block2->next = NULL;
+  void *data2 = (char *)heap + blockSize + headSize;
+  memset(data2, 1, dataSize);
+
+  block2->next = block1;
+
+  // Now everything is defined (YAY) Let's do something weird
+  char buffer[100];
+  int len = snprintf(buffer, sizeof(buffer), "first block:       %p\n", block1);
+  write(1, buffer, len);
+
+  len = snprintf(buffer, sizeof(buffer), "second block:      %p\n", block2);
+  write(1, buffer, len);
+
+
+  printf("first block size:  %lu\n", block1->size);
+  printf("first block next:  %p\n", block1->next);
+  printf("second block size: %lu\n", block2->size);
+  printf("second block next: %p\n", block2->next);
+
+  for (ssize_t i = 0; i < dataSize; i++) {
+    printf("%d\n", *(int *)(data1 + i * sizeof(int)));
+  }
+  for (ssize_t i = 0; i < dataSize; i++) {
+    printf("%d\n", *(int *)(data2 + i * sizeof(int)));
+  }
+  return 0;
+}

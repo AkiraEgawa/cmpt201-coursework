@@ -1,0 +1,14 @@
+CC=clang
+CCFLAG= -fsanitize=address
+EXECUTABLE=lab4
+
+all: $(EXECUTABLE)
+
+%:%.o
+	$(CC) $(CCFLAG) $< -o $@
+
+%.o:%.c
+	$(CC) -c $<
+
+clean:
+	rm -f $(EXECUTABLE)

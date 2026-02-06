@@ -1,0 +1,51 @@
+#define _POSIX_C_SOURCE 200112L
+#define _GNU_SOURCE
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+int main() {
+  intptr_t increment = 256;
+  void *heap = sbrk(increment);
+
+  // Have to figure out size of header
+  ssize_t total = 256;
+  ssize_t headSize = sizeof(struct header);
+  ssize_t blockSize = total / 2;
+  ssize_t dataSize = blockSize - headSize;
+
+  // now, to assign some stuff
+  struct header *block1 = (struct header *)heap;
+  block1->size = blockSize;
+  block1->next = NULL;
+  void *data1 = (char *)heap + headSize;
+  memset(data1, 0, dataSize);
+
+  // now do the same to block2
+  struct header *block2 = (struct header *)((char *)heap + blockSize);
+  block2->size = blockSize;
+  block2->next = NULL;
+  void *data2 = (char *)heap + blockSize + headSize;
+  memset(data2, 1, dataSize);
+
+  block1->next = block2;
+
+  // Now everything is defined (YAY) Let's do something weird
+  printf("first block:       %p\n", block1);
+  printf("second block:      %p\n", block2);
+  printf("first block size:  %d\n", block1->size);
+  printf("first block next:  %p\n", block1->next);
+
+  printf("block1: %p\n", block1);
+  printf("block2: %p\n", block2);
+
+  return 0;
+}
