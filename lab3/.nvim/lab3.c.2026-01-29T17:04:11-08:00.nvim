@@ -1,0 +1,17 @@
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+  FILE* stream = stdin;
+  size_t len = 0;
+  char* string = NULL;
+  char* stringArr[5];
+  int i = 0;
+  while(1){
+    getline(&string, &len, stream);
+    printf("%s\n",string);
+  }
+  return 0;
+}

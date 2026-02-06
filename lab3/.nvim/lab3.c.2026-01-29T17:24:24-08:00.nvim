@@ -1,0 +1,34 @@
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+  FILE *stream = stdin;
+  size_t len = 0;
+  char *stringArr[5];
+  int i = 0;
+
+  while (1) {
+    getline(&stringArr[i], &len, stream);
+    if (strcmp(stringArr[i], "print\n") == 0) {
+      for (int j = 0; j <= i; j++) {
+        printf("%s", stringArr[j]);
+      }
+    }
+    if(i!=4){i++;} //For the love of god, don't increment i past the array length...
+
+    // If i is at end, we do a simple lossy rotate
+    if (i == 4) {
+      char *temp = stringArr[0];
+      for (int j = 0; j < 4; j++) {
+        stringArr[j] = stringArr[j + 1];
+      }
+      stringArr[4] = temp;
+    }
+  }
+  for (int j = 0; j <= i; j++) {
+    free(stringArr[j]);
+  }
+  return 0;
+}

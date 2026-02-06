@@ -1,0 +1,26 @@
+#define _GNU_POSIX
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Node{
+  char* string;
+  struct Node* next;
+};
+
+struct Node* createNode(char* string){
+  struct Node* newNode = malloc(sizeof(newNode));
+  newNode->string = string;
+  newNode->next = NULL;
+  return newNode;
+}
+
+void append(struct Node** head, char* string){
+  struct Node* current = *head;
+  while (current->next!=NULL){
+    current=current->next;
+  }
+  current->next=createNode(string);
+}
+
+void traverse(`)
