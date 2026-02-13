@@ -1,0 +1,7 @@
+CC = clang
+
+all:
+	$(CC) lab5.c -fanitize=address -o lab5
+
+clean:
+	rm lab5
