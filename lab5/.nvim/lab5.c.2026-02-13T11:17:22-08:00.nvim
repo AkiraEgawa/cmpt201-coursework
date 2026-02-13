@@ -14,7 +14,7 @@ typedef struct header {
 void freeChain(header *head) {
   header *cur = head;
   header *prev = NULL;
-  while (cur != NULL) {
+  while (head != NULL) {
     prev = cur;
     cur = cur->next;
     free(prev);

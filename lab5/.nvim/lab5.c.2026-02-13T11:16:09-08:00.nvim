@@ -11,10 +11,10 @@ typedef struct header {
   int id;
 } header;
 
-void freeChain(header *head) {
-  header *cur = head;
-  header *prev = NULL;
-  while (cur != NULL) {
+void freeChain(header* head){
+  header* cur = head;
+  header* prev = NULL;
+  while(head != NULL){
     prev = cur;
     cur = cur->next;
     free(prev);
@@ -97,6 +97,7 @@ int main(void) {
   int best_fit_id = find_best_fit(free_list_ptr, 7);
   int worst_fit_id = find_worst_fit(free_list_ptr, 7);
 
+  // TODO: Print out the IDs
   char buffer[128];
   snprintf(buffer, 128, "first_fit_id: %d\n", first_fit_id);
   write(1, buffer, strlen(buffer));
