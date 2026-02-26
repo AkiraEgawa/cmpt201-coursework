@@ -1,0 +1,4 @@
+/home/cmpt201/cmpt201-coursework/lab6/build/CMakeFiles/example1.dir
+/home/cmpt201/cmpt201-coursework/lab6/build/CMakeFiles/example2.dir
+/home/cmpt201/cmpt201-coursework/lab6/build/CMakeFiles/edit_cache.dir
+/home/cmpt201/cmpt201-coursework/lab6/build/CMakeFiles/rebuild_cache.dir

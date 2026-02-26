@@ -1,0 +1,168 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+// please use typedef, makes my life easier
+typedef struct header {
+  uint64_t size;
+  struct header *next;
+  int id;
+} header;
+
+void freeChain(header *head) {
+  header *cur = head;
+  header *prev = NULL;
+  while (cur != NULL) {
+    prev = cur;
+    cur = cur->next;
+    free(prev);
+  }
+}
+
+void initialize_block(struct header *block, uint64_t size, struct header *next,
+                      int id) {
+  block->size = size;
+  block->next = next;
+  block->id = id;
+}
+
+int find_first_fit(struct header *free_list_ptr, uint64_t size) {
+  header *cur = free_list_ptr;
+  while (cur != NULL) {
+    if (cur->size >= size) {
+      return cur->id;
+    }
+    cur = cur->next;
+  }
+  return -1;
+}
+
+int find_best_fit(struct header *free_list_ptr, uint64_t size) {
+  int best_fit_id = -1;
+  header *cur = free_list_ptr;
+  int size_diff = -1;
+  // just do a running min?
+  while (cur != NULL) {
+    if (cur->size >= size) {
+      // block is larger than data
+      if (((cur->size - size) < size_diff) || (best_fit_id == -1)) {
+        // best_fit_id == -1 means that we've yet to set anything
+        size_diff = cur->size - size;
+        best_fit_id = cur->id;
+      }
+    }
+    cur = cur->next;
+  }
+  return best_fit_id;
+}
+
+int find_worst_fit(struct header *free_list_ptr, uint64_t size) {
+  int worst_fit_id = -1;
+  header *cur = free_list_ptr;
+  int size_diff = -1;
+  // just do a running max?
+  while (cur != NULL) {
+    // block is big enough
+    if (cur->size >= size) {
+      // either we've yet to set a block or the diff is even bigger
+      if ((cur->size - size) > size_diff || worst_fit_id == -1) {
+        size_diff = cur->size - size;
+        worst_fit_id = cur->id;
+      }
+    }
+    cur = cur->next;
+  }
+  return worst_fit_id;
+}
+
+int main(void) {
+
+  struct header *free_block1 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block2 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block3 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block4 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block5 = (struct header *)malloc(sizeof(struct header));
+
+  initialize_block(free_block1, 6, free_block2, 1);
+  initialize_block(free_block2, 12, free_block3, 2);
+  initialize_block(free_block3, 24, free_block4, 3);
+  initialize_block(free_block4, 8, free_block5, 4);
+  initialize_block(free_block5, 4, NULL, 5);
+
+  struct header *free_list_ptr = free_block1;
+
+  int first_fit_id = find_first_fit(free_list_ptr, 7);
+  int best_fit_id = find_best_fit(free_list_ptr, 7);
+  int worst_fit_id = find_worst_fit(free_list_ptr, 7);
+
+  char buffer[128];
+  snprintf(buffer, 128, "first_fit_id: %d\n", first_fit_id);
+  write(1, buffer, strlen(buffer));
+  snprintf(buffer, 128, "best_fit_id: %d\n", best_fit_id);
+  write(1, buffer, strlen(buffer));
+  snprintf(buffer, 128, "worst_fit_id: %d\n", worst_fit_id);
+  write(1, buffer, strlen(buffer));
+
+  freeChain(free_list_ptr);
+  return 0;
+}
+
+/* *
+ THIS IS FOR PART 2
+ assumptions
+  Code is same structure as above
+  fully coallesced already
+  only block z will need to be merged
+  the headers are accurate to the bit
+  we have functions start(b) and end(b) to get the start and end of a block from
+ the header
+
+  while cur != NULL && start(curr) < start(z):
+    prev = cur
+    cur = cur->next
+
+  merge_prev = merge_next = false
+  // if previous exists, and since linked list is weird, we check endpoints
+  if prev != NULL && end(prev) == start(z)
+    merge_prev = true
+  if cur != NULL && end(z) = start(cur)
+    merge_next = true
+
+  Cases:
+  No merging
+  if !merge_prev && !merge_next
+    insert z between prev and next
+    z->next = cur
+    if prev != NULL
+      prev->next = z
+    else
+      free_list_head = z
+
+  merge with prev only
+  if merge_prev && !merge_next
+    prev_size += z->size
+    // Since prev is technically linked to next already, nothing needs to be
+ done
+
+  merge with next only
+  if !merge_prev && merge_next
+    // We make z eat next, as extending backwards is hard
+    z->size += cur->size
+    z->next = cur->next
+
+    if prev != NULL
+      prev->next = z
+    ELSE
+      free_list_head = z
+
+  merge with both sides
+  if merge_prev && merge_next
+    // instead of making things hard, prev becomes a glutton
+    prev->size += z->size + cur->size
+    prev->next = cur->next
+
+  return free_list_head
+
+ * */

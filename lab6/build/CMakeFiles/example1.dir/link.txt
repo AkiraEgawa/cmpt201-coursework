@@ -1,0 +1,1 @@
+/usr/bin/clang -g CMakeFiles/example1.dir/example_1.c.o -o example1 
