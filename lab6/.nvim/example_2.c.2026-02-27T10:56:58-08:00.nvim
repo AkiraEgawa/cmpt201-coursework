@@ -8,10 +8,11 @@
       fprintf(stderr, "Assertion failed: %s\n", #expr);                        \
       fprintf(stderr, "FILE: %s, LINE: %d\n", __FILE__, __LINE__);             \
       exit(1);                                                                 \
-    } else {                                                                   \
+    }                                                                          \
+    else{                                                                      \
       fprintf(stdout, "Assertion passed: %s\n", #expr);                        \
     }                                                                          \
-  }
+  }                                                                            \
 
 #define TEST(expr)                                                             \
   {                                                                            \
