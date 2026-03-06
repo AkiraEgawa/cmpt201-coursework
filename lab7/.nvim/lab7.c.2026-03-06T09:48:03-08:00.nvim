@@ -92,10 +92,10 @@ void groupByKey(IntermediateInput *input, Output *output, int *result_count) {
   // If the doubled value exists in the output entries, add it to the output's
   // line_numbers list If it doesn't exist, add a new entry to the output
   // if we're here, it means for loop ran without triggering the if
-  Output *place = &output[*result_count];
-  place->doubled_value = input->doubled_value;
-  place->line_numbers[0] = input->line_number;
-  place->count = 1;
+  Output place = output[*result_count];
+  place.doubled_value = input->doubled_value;
+  place.line_numbers[0] = input->line_number;
+  output[0].count = 1;
   (*result_count)++;
   return;
 }

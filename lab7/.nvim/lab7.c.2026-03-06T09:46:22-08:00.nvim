@@ -82,8 +82,8 @@ void map(Input *input, IntermediateInput *intermediate_input) {
 void groupByKey(IntermediateInput *input, Output *output, int *result_count) {
   // Group entries
   // Search for an existing place
-  for (int i = 0; i < *result_count; i++) {
-    if (output[i].doubled_value == input->doubled_value) {
+  for(int i = 0; i < *result_count; i++){
+    if(output[i].doubled_value == input->doubled_value){
       output[i].line_numbers[output[i].count] = input->line_number;
       output[i].count++;
       return;
@@ -92,10 +92,10 @@ void groupByKey(IntermediateInput *input, Output *output, int *result_count) {
   // If the doubled value exists in the output entries, add it to the output's
   // line_numbers list If it doesn't exist, add a new entry to the output
   // if we're here, it means for loop ran without triggering the if
-  Output *place = &output[*result_count];
-  place->doubled_value = input->doubled_value;
-  place->line_numbers[0] = input->line_number;
-  place->count = 1;
+  Output place = output[*result_count];
+  place.doubled_value = input->doubled_value;
+  place.line_numbers[0] = input->line_number;
+  output[0].count = 1;
   (*result_count)++;
   return;
 }
@@ -105,11 +105,12 @@ void reduce(Output *output) {
   // Print the doubled number and line numbers
   printf("(");
   printf("%d, [", output->doubled_value);
-  for (int i = 0; i < output->count; i++) {
+  for(int i = 0; i< output->count; i++){
     printf("%d", output->line_numbers[i]);
-    if (i == output->count - 1) {
+    if(i==output->count-1){
       printf("]");
-    } else {
+    }
+    else{
       printf(", ");
     }
   }
