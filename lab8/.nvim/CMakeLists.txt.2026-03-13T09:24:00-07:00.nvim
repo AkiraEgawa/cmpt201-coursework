@@ -14,8 +14,7 @@ set(CMAKE_BUILD_TYPE Debug)
 # add_link_options(-fsanitize=address)
 # --------- Task 3 ---------
 # Enable the thread sanitizer 
-add_compile_options(-fsanitize=thread)
-add_link_options(-fsanitize=thread)
+# TODO
 
 
 add_compile_options(-pthread)
