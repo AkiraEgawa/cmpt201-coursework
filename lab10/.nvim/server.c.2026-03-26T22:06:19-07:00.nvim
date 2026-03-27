@@ -11,16 +11,14 @@ Understanding the Client:
 Understanding the Server:
 1. Explain the argument that the `run_acceptor` thread is passed as an argument.
   run: atomic bool flag to tell server when to stop accepting new connections
-  list_handle: pointer to shared linked list where messages from clients are
-stored list_lock: pointer to a lock for list_handle
+  list_handle: pointer to shared linked list where messages from clients are stored
+  list_lock: pointer to a lock for list_handle
 
 2. How are received messages stored?
-  in a singly linked list, list_node is made by run_client then attached to
-linked list
+  in a singly linked list, list_node is made by run_client then attached to linked list
 
 3. What does `main()` do with the received messages?
-  main does a collect_all function that iterates through and prints them, then
-frees everything
+  main does a collect_all function that iterates through and prints them, then frees everything
 
 4. How are threads used in this sample code?
   3 threads: main, acceptor, and worker
