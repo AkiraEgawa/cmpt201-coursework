@@ -28,16 +28,15 @@ frees everything
 
 More questions
 5.1 How are sockets made non-blocking?
-  We use fcntl() with the F_SETFL command to add the O_NONBLOCK flag to the
-socket's fd
+  We use fcntl() with the F_SETFL command to add the O_NONBLOCK flag to the socket's fd
 
 5.2 What sockets are made non-blocking?
   We made the listening sockets and each client's connection socket non-blocking
 
 5.3 Why non-blocking? What purpose does it serve?
-  it lets the threads poll the sockets instead of the thread getting stuck on a
-read or accept call. it returns a EAGAIN or EWOULDBLOCK if there's nothing to
-read yet, allowing us to loop cleaner and have less threads.
+  it lets the threads poll the sockets instead of the thread getting stuck on a read or accept call.
+  it returns a EAGAIN or EWOULDBLOCK if there's nothing to read yet, allowing us to loop cleaner and
+  have less threads.
 */
 
 #include <arpa/inet.h>
@@ -204,6 +203,8 @@ static void *run_acceptor(void *args) {
           handle_error("accept");
         }
       } else {
+        printf("Client connected!\n");
+
         client_args[num_clients].cfd = cfd;
         client_args[num_clients].run = true;
         client_args[num_clients].list_handle = aargs->list_handle;
@@ -211,8 +212,7 @@ static void *run_acceptor(void *args) {
         num_clients++;
 
         // Create a new thread to handle the client
-        pthread_create(&threads[num_clients - 1], NULL, run_client,
-                       &client_args[num_clients - 1]);
+        pthread_create(&threads[num_clients-1], NULL, run_client, &client_args[num_clients-1]);
         printf("Client connected!\n");
       }
     }
@@ -225,7 +225,7 @@ static void *run_acceptor(void *args) {
     // Set flag to stop the client thread
     client_args[i].run = false;
     // Wait for the client thread and close its socket
-    pthread_join(threads[i], NULL);
+    pthread_join(threads[i],NULL);
     close(client_args[i].cfd);
   }
 
@@ -260,9 +260,9 @@ int main() {
   uint32_t target_count = MAX_CLIENTS * NUM_MSG_PER_CLIENT;
   bool finished = false;
 
-  while (!finished) {
+  while(!finished) {
     pthread_mutex_lock(&list_mutex);
-    if (list_handle.count >= target_count) {
+    if(list_handle.count >= target_count){
       finished = true;
     }
     pthread_mutex_unlock(&list_mutex);

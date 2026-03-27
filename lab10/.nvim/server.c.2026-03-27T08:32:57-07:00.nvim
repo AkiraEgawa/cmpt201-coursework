@@ -196,7 +196,7 @@ static void *run_acceptor(void *args) {
   printf("Accepting clients...\n");
 
   uint16_t num_clients = 0;
-  while (aargs->run) {
+  while (aargs->run && num_clients < MAX_CLIENTS) {
     if (num_clients < MAX_CLIENTS) {
       int cfd = accept(sfd, NULL, NULL);
       if (cfd == -1) {
@@ -204,6 +204,8 @@ static void *run_acceptor(void *args) {
           handle_error("accept");
         }
       } else {
+        printf("Client connected!\n");
+
         client_args[num_clients].cfd = cfd;
         client_args[num_clients].run = true;
         client_args[num_clients].list_handle = aargs->list_handle;
