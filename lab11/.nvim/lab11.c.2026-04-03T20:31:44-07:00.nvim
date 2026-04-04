@@ -10,10 +10,10 @@
 #define GRN "\e[0;32m"
 #define CRESET "\e[0m"
 
-#define handle_error(msg)                                                      \
-  do {                                                                         \
-    perror(msg);                                                               \
-    exit(EXIT_FAILURE);                                                        \
+#define handle_error(msg)            \
+  do {                               \
+    perror(msg);                     \
+    exit(EXIT_FAILURE);              \
   } while (0)
 
 size_t read_all_bytes(const char *filename, void *buffer, size_t buffer_size) {
@@ -64,8 +64,8 @@ int main() {
 
   // TODO: Load the public key using PEM_read_PUBKEY
   EVP_PKEY *pubkey = NULL;
-
-  FILE *pubkey_file = fopen("public_key.pem", "r");
+  
+  FILE* pubkey_file = fopen("public.pen", "r");
   if (!pubkey_file) {
     handle_error("Error opening public key file");
   }
@@ -73,7 +73,7 @@ int main() {
   pubkey = PEM_read_PUBKEY(pubkey_file, NULL, NULL, NULL);
   fclose(pubkey_file);
 
-  if (!pubkey) {
+  if(!pubkey) {
     fprintf(stderr, "Error loading pubkey\n");
     ERR_print_errors_fp(stderr);
     exit(EXIT_FAILURE);
@@ -110,28 +110,26 @@ int main() {
         -1: Message is does not match signature
 */
 
-int verify(const char *message_path, const char *sign_path, EVP_PKEY *pubkey) {
-#define MAX_FILE_SIZE 512
+int verify(const char *message_path, const char *sign_path, EVP_PKEY *pubkey){
+  #define MAX_FILE_SIZE 512
   unsigned char message[MAX_FILE_SIZE];
   unsigned char signature[MAX_FILE_SIZE];
 
-  if (pubkey == NULL)
-    return -1;
+  if(pubkey == NULL) return -1;
 
   size_t message_len = read_all_bytes(message_path, message, MAX_FILE_SIZE);
   size_t signature_len = read_all_bytes(sign_path, signature, MAX_FILE_SIZE);
 
-  EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-  if (!ctx)
-    return -1;
+  EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+  if(!ctx) return -1;
 
-  if (EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, pubkey) <= 0) {
+  if(EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, pubkey) <= 0) {
     EVP_MD_CTX_free(ctx);
     return -1;
   }
   if (EVP_DigestVerifyUpdate(ctx, message, message_len) <= 0) {
-    EVP_MD_CTX_free(ctx);
-    return -1;
+      EVP_MD_CTX_free(ctx);
+      return -1;
   }
   int result = EVP_DigestVerifyFinal(ctx, signature, signature_len);
   EVP_MD_CTX_free(ctx);

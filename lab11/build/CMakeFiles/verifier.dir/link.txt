@@ -1,0 +1,1 @@
+/usr/bin/clang CMakeFiles/verifier.dir/lab11.c.o -o verifier  /usr/lib/x86_64-linux-gnu/libcrypto.so 
